@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
   <title>
-    @yield('title', 'Tienda Virtual App Shop')
+    @yield('title', config('app.name'))
   </title>
 
   <!--<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />-->
@@ -41,7 +41,7 @@
                       <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- nombre app shop -->
-                    <a class="navbar-brand" href="{{ url('/') }}">App shop</a>
+                    <a class="navbar-brand" href="{{ url('/') }}">{{ config('app.name') }}</a>
               </div>
 
             <div class="collapse navbar-collapse">
@@ -67,6 +67,10 @@
                                     <a href="{{ url('/home') }}">Dashboard</a>
                                   </li>
                                   @if (auth()->user()->admin)
+                                                                  <li>
+                                  <a href="{{ url('/admin/categories') }}">Gestionar categorías</a>
+                                  </li>
+
                                   <li>
                                    <a href="{{ url('/admin/products') }}">Gestionar productos</a>
                                   </li>
@@ -74,7 +78,7 @@
                                   <a class="dropdown-item" href="{{ route('logout') }}"
                                      onclick="event.preventDefault();
                                                    document.getElementById('logout-form').submit();">
-                                      <!-- {{ __('Logout') }} -->Salir
+                                      <!-- {{ __('Logout') }} -->Cerrar sesión
                                   </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -101,17 +105,24 @@
 </body>
 
  <!-- script -->
-  <!--<script src=" asset('js/app.js') }}"></script>-->
-  <script src="{{ asset('js/core/jquery.min.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('js/core/popper.min.js') }}" type="text/javascript"></script>
+  <!--<script src=" asset('/js/app.js') }}"></script>-->
+  <script src="{{ asset('/js/core/jquery.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('/js/bootstrap.min.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('/js/material-kit.min.js') }}" type="text/javascript></script"></script>
+  
+  <script src="{{ asset('/js/plugins/nouislider.min.js" type="text/javascript') }}"></script>
 
-  <script src="{{ asset('js/plugins/moment.min.js') }}"></script>
+  
+  <script src="{{ asset('/js/material-kit.js') }}" type="text/javascript></script"></script>
 
-  <script src="{{ asset('js/plugins/nouislider.min.js" type="text/javascript') }}"></script>
-  <script src="{{ asset('js/plugins/bootstrap-datetimepicker.js')}}" type="text/javascript"></script> 
+  <script src="{{ asset('/js/plugins/bootstrap-datetimepicker.js')}}" type="text/javascript"></script> 
+
+  <script src="{{ asset('/js/core/popper.min.js') }}" type="text/javascript"></script>
+
+  <script src="{{ asset('/js/plugins/moment.min.js') }}"></script>
+
+  <script src="{{ asset('/js/core/bootstrap-material-design.min.js') }}" type="text/javascript"></script>
  
-  <script src="{{ asset('js/core/bootstrap-material-design.min.js') }}" type="text/javascript"></script>
- 
-  <script src="{{ asset('js/material-kit.js') }}" type="text/javascript></script"></script>
+  @yield('scripts')
 
 </html>

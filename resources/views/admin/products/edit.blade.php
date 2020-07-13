@@ -45,10 +45,25 @@
               </div>
             </div>
                   
-            <div class="form-group label-floating">
+          
+             <div class="row">
+              <div class="form-group label-floating col-md-6">
               <label class="control-label">Descripción corta</label>
               <input type="text" class="form-control" name="description" value="{{ old('descrption', $product->description) }}">
             </div>
+                
+                <div class="form-group label-floating  col-md-6">
+                  <label class="control-label">Categoría del producto</label>
+                  <select class="custom-select" name="category_id">
+                    <option value="0">General</option>
+                    @foreach ( $categories as $category)
+                    <option value="{{ $category->id }}" @if($category->id == old('category_id', $product->category_id)) selected @endif>{{ $category->name }}
+                    </option>
+                    @endforeach                  
+                  </select>
+                </div>
+              </div>
+
         
             <textarea class="form-control" placeholder="Descripción extensa del producto" rows="5" name="long_description">{{ old('long_description', $product->long_description) }}</textarea>
 

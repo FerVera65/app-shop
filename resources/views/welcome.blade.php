@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Bienvenido a App Shop')
+@section('title', 'Bienvenido a ' . config('app.name'))
 
 @section('body-class', 'landing-page') <!--landing-page sidebar-collapse -->
 
@@ -9,18 +9,71 @@
     .team .row .col-4{
       margin-bottom: 5em;
     }
-    .row {
+    .team .row {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
       display:  flex;
       flex-wrap: wrap;
     }
-      .row->[class*='col-'] {
-        display: flex;
+     .team .row->[class*='col-'] {
+        display:  flex;
         flex-direction: column;
       }
-  </style>
+    .form-inline {
+      display: block;
+      flex-flow: row wrap;
+      align-items: center;
+}
+ 
+  .tt-query, /* UPDATE: newer versions use tt-input instead of tt-query */
+  .tt-hint {
+      width: 396px;
+      height: 30px;
+      padding: 8px 12px;
+      font-size: 24px;
+      line-height: 30px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+  }
+
+  .tt-query { /* UPDATE: newer versions use tt-input instead of tt-query */
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+
+  .tt-hint {
+      color: #999;
+  }
+
+  .tt-menu { /* UPDATE: newer versions use tt-menu instead of tt-dropdown-menu */
+      width: 422px;
+      margin-top: 12px;
+      padding: 8px 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  }
+
+  .tt-suggestion {
+      padding: 3px 20px;
+      font-size: 18px;
+      line-height: 24px;
+  }
+
+  .tt-suggestion.tt-is-under-cursor { /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+      color: #fff;
+      background-color: #0097cf;
+
+  }
+
+  .tt-suggestion p {
+      margin: 0;
+  }
+
+</style>
     
 @endsection
 
@@ -31,7 +84,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-          <h1 class="title">Bienvenido a App Shop</h1>
+          <h1 class="title">Bienvenido a {{ config('app.name') }}</h1>
           <h4>Realiza tus pedidos en linea y te contactaremos para coordinar la entrega.</h4>
           <br>
           <a href="#" target="_blank" class="btn btn-danger btn-raised btn-lg">
@@ -85,27 +138,34 @@
 </div>
 
 <div class="section text-center">
-    <h2 class="title">Productos Disponibles</h2>
+    <h2 class="title">Visita nuestras categorías</h2>
+
+        <form class="form-inline" method="get" action="{{ url('/search') }}">
+          <input type="text" placeholder="¿Que producto buscas" class="form-control" name="query" id="search">
+          <button class="btn btn-primary btn-fab btn-fab-mini btn-round" type="submit">
+            <i class="material-icons">search</i>
+          </button>
+        </form>
+
 
     <div class="team">
       <div class="row">
-        @foreach ($products as $product)
+        @foreach ($categories as $category)
 
- 
         <div class="col-md-4">
           <div class="team-player">
 
             <div class="card card-plain">
               <div class="col-md-6 ml-auto mr-auto">
-                <img src="{{ $product->featured_image_url }}" alt="Sin Imagen2" class="img-raised rounded-circle img-fluid"> <!-- $product->images()->first()  ? $product->images()->first()->image : 'vacio'  -->
+                <img src="{{ $category->featured_image_url }}" alt="Imagen representativa de la categoría {{ $category->name }}" class="img-raised rounded-circle img-fluid"> <!-- $category->images()->first()  ? $category->images()->first()->image : 'vacio'  -->
               </div>
               <h4 class="card-title">
-                <a href="{{ url('/products/'.$product->id) }}">{{ $product->name }}</a>
+                <a href="{{ url('/categories/'.$category->id) }}">{{ $category->name }}</a>
                 <br>
-                 <small class="card-description text-muted">{{ $product->category ? $product->category->name : 'General'}}</small>
+                 <small class="card-description text-muted">{{ $category->category ? $category->category->name : 'General'}}</small>
               </h4>
               <div class="card-body">
-                <p class="card-description">{{ $product->description ? $product->description : 'S/d' }}</p>
+                <p class="card-description">{{ $category->description }}</p> <!--? $category->description : 'S/d' -->
               </div>
 
             
@@ -116,7 +176,7 @@
       </div>
         <div class="col-md-3 ml-auto mr-auto text-center">
           <div class="row">
-          {{ $products->links ()}}
+          <!--  $products->links () -->
           </div>
         </div>        
     </div>
@@ -162,4 +222,27 @@
 
 @include('includes.footer')
 
+@endsection
+
+@section('scripts')
+  <script src="{{ asset('/js/typeahead.bundle.min.js') }}"></script>
+  <script>
+    $(function () {
+      // 
+      var products = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: '{{ url("/products/json") }}'
+      });
+      //inicializar typehead en el input
+      $('#search').typehead({
+          hint: true,
+          highlight: true,
+          minLength: 1
+      }, {
+          name: 'products',
+          source: products
+      });
+    });
+  </script>
 @endsection

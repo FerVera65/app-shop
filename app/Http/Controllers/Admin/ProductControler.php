@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Category;
 
 
 class ProductControler extends Controller
@@ -18,7 +19,8 @@ class ProductControler extends Controller
 
     public function create()
     {
-    	return view('admin.products.create'); // formulario
+    	$categories = Category::orderBy('name')->get();
+        return view('admin.products.create')->with(compact('categories')); // formulario
     }
 
 
@@ -50,6 +52,7 @@ class ProductControler extends Controller
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->long_description = $request->input('long_description');
+        $product->category_id = $request->category_id;    
         $product->save(); //inserta un registro
 
         return redirect('/admin/products');
@@ -58,8 +61,9 @@ class ProductControler extends Controller
         public function edit($id)
     {
         //return "muestra el valor a cambiar del producto $id";
+        $categories = Category::orderBy('name')->get();
         $product = Product::find($id);
-        return view('admin.products.edit')->with(compact('product')); // formulario
+        return view('admin.products.edit')->with(compact('product', 'categories')); // formulario
     }
 
 
@@ -91,6 +95,7 @@ class ProductControler extends Controller
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->long_description = $request->input('long_description');
+        $product->category_id = $request->category_id;
         $product->save(); //UPDATE
  
         return redirect('/admin/products');
